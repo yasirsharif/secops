@@ -1,0 +1,66 @@
+---
+- hosts: all
+  gather_facts: false
+## This playbook is copied from: https://daysofthunderblog.wordpress.com/2018/03/29/ansible-install-cockpit-centos7/
+#
+# Add the EPEL Repository
+#
+  tasks:
+  - name: Add the EPEL Repository
+    yum:
+      name: epel-release
+      state: present
+
+#
+# cockpit
+#
+
+  - name: Install cockpit
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+    - cockpit
+    - cockpit-ws # Cockpit Web Service
+ # - cockpit-pcp # Cockpit PCP integration
+ # - cockpit-selinux # Cockpit SELinux package
+ # - cockpit-doc # Cockpit deployment and developer guide
+ # - cockpit-bridge # Cockpit bridge server-side component
+ # - cockpit-dashboard # Cockpit remote servers and dashboard
+ # - cockpit-docker # Cockpit user interface for Docker containers
+ # - cockpit-machines # Cockpit user interface for virtual machines
+ # - cockpit-kdump # Cockpit user interface for kernel crash dumping
+ # - cockpit-packagekit # Cockpit user interface for package updates
+ # - cockpit-sosreport # Cockpit user interface for diagnostic reports
+ # - cockpit-kubernetes # Cockpit user interface for Kubernetes cluster
+ # - cockpit-subscriptions # Cockpit subscription user interface package
+ # - cockpit-storaged # Cockpit user interface for storage, using Storaged
+ # - cockpit-networkmanager # Cockpit user interface for networking, using NetworkManager
+ # - cockpit-system # Cockpit admin interface package for configuring and troubleshooting a system
+
+#
+# start and enable cockpit
+#
+
+  - name: start cockpit
+    systemd:
+      name: cockpit
+      state: started
+
+  - name: enable cockpit.socket
+    systemd:
+      name: cockpit.socket
+      enabled: yes
+
+#
+# set firewall rules for cockpit
+#
+
+  - name: Firewall rules
+    firewalld:
+      service: cockpit
+      permanent: true
+      state: enabled
+      immediate: yes
+
+...
