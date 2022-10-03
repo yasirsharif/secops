@@ -1,0 +1,30 @@
+---
+- name: create users and groups
+  hosts: all
+  become: true
+  gather_facts: false
+  vars:
+    users:
+    - name: fff
+      uid: 111
+      first: yasir
+      second: moh
+      last: sharif
+    - name: neo
+      uid: 111
+      first: fatih
+      second: yas
+      last: elsharif
+
+  tasks:
+    - name: create users
+      vars:
+        user_password: "{{ lookup('password', 'credentials/' + item.name 'length=8') }}"
+      loop: "{{ users }}"
+      user:
+        name: "{{ item['name'] }}"
+        state: present
+        uid: "{{ item['uid'] }}"
+        password: "{{ user_password | password_hash('512') }}"
+        update_password: on_create
+        comment: "{{ item.first | capitalize }} {{ item.second | capitalize }} {{ item.last | capitalize }}"
