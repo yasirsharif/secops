@@ -19,7 +19,7 @@
   tasks:
     - name: create users
       vars:
-        user_password: "{{ lookup('password', 'debug-credentials/' + item.name, length=8) }}"
+        user_password: "{{ lookup('password', 'debug-credentials/' + item.name + ' length=8') }}"
       loop: "{{ users }}"
       debug:
         msg: 
