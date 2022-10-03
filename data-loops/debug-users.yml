@@ -10,9 +10,16 @@
         msg:
           - "name: {{ item['key'] }}"
           - "groups: {{ item['value']['my_groups'] }}"
+    - name: test1
+      loop: "{{ lookup('dict', my_users) }}"
+      ansible.builtin.debug:
+        msg:
+          - "name: {{ item['key'] }}"
+          - "groups: {{ item['value']['my_groups'] }}"
     - name: test 2
       loop: "{{ my_users | subelements('my_groups') }}"
       debug:
         msg:
           - "name: {{ item[0]['name'] }}"
           - "groups: {{ item[1] }}"
+
